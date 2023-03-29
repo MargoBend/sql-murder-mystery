@@ -1,7 +1,10 @@
+The crime was a murder that occurred sometime on Jan.15, 2018 and that it took place in SQL City
+
 --Finding a murder description in the crime scene report with given data 
---(the crime was a murder that occurred sometime on Jan.15, 2018 and that it took place in SQL City)
 SELECT description 
 FROM crime_scene_report
 WHERE date='20180115' AND type='murder' AND city='SQL City';
 
 --
+SELECT * FROM person
+WHERE name LIKE '%annabel%'
