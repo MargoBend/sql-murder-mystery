@@ -7,4 +7,6 @@ WHERE date='20180115' AND type='murder' AND city='SQL City';
 
 --
 SELECT * FROM person
-WHERE name LIKE '%annabel%'
+WHERE name LIKE '%annabel%' AND address_street_name LIKE '%Franklin%' 
+OR address_street_name LIKE '%Northwestern%' 
+ORDER BY address_number DESC
