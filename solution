@@ -1,12 +1,46 @@
 The crime was a murder that occurred sometime on Jan.15, 2018 and that it took place in SQL City
 
---Finding a murder description in the crime scene report with given data 
+--Finding witnesses description in the crime scene report with given data 
 SELECT description 
 FROM crime_scene_report
 WHERE date='20180115' AND type='murder' AND city='SQL City';
 
---
-SELECT * FROM person
-WHERE name LIKE '%annabel%' AND address_street_name LIKE '%Franklin%' 
-OR address_street_name LIKE '%Northwestern%' 
-ORDER BY address_number DESC
+-- Finding the data about the witnesses 
+-- Using UNION to combine two clauses with MAX function
+SELECT id,name,license_id, MAX (address_number) as address_n,ssn 
+FROM person
+WHERE address_street_name LIKE '%Northwestern%'
+UNION
+SELECT id,name,license_id,address_number,ssn
+FROM person
+WHERE name LIKE '%annabel%' AND address_street_name LIKE '%Franklin%'
+
+
+--Checking witnesses' interview
+--Using upgraded previous code as subquireies and then LEFT JOIN with the preson table
+SELECT transcript 
+FROM interview
+LEFT JOIN person ON 
+interview.person_id=person.id
+WHERE person.id IN
+   (SELECT person.id 
+   FROM person
+   WHERE address_number IN (SELECT MAX(address_number) as address_n
+						 FROM person 
+						 WHERE address_street_name LIKE '%Northwestern%')
+             UNION
+             SELECT person.id
+             FROM person
+             WHERE name LIKE '%annabel%' AND address_street_name LIKE '%Franklin%')   
+            
+--Finding out the criminal based on the witnesess' intervew
+SELECT get_fit_now_member.name
+FROM get_fit_now_member
+LEFT JOIN person ON
+person.id=get_fit_now_member.person_id
+LEFT JOIN drivers_license ON
+drivers_license.id=person.license_id
+WHERE get_fit_now_member.id LIKE '48Z%' AND membership_status LIKE '%gold%' 
+AND drivers_license.plate_number LIKE '%h42W%'
+
+SOLVED! 
