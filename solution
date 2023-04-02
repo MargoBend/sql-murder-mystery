@@ -1,12 +1,14 @@
 The crime was a murder that occurred sometime on Jan.15, 2018 and that it took place in SQL City
 
 --Finding witnesses description in the crime scene report with given data 
+
 SELECT description 
 FROM crime_scene_report
 WHERE date='20180115' AND type='murder' AND city='SQL City';
 
 -- Finding the data about the witnesses 
 -- Using UNION to combine two clauses with MAX function
+
 SELECT id,name,license_id, MAX (address_number) as address_n,ssn 
 FROM person
 WHERE address_street_name LIKE '%Northwestern%'
@@ -18,6 +20,7 @@ WHERE name LIKE '%annabel%' AND address_street_name LIKE '%Franklin%'
 
 --Checking witnesses' interview
 --Using upgraded previous code as subquireies and then LEFT JOIN with the preson table
+
 SELECT transcript 
 FROM interview
 LEFT JOIN person ON 
@@ -34,6 +37,7 @@ WHERE person.id IN
              WHERE name LIKE '%annabel%' AND address_street_name LIKE '%Franklin%')   
             
 --Finding out the criminal based on the witnesess' intervew
+
 SELECT get_fit_now_member.name
 FROM get_fit_now_member
 LEFT JOIN person ON
@@ -43,4 +47,32 @@ drivers_license.id=person.license_id
 WHERE get_fit_now_member.id LIKE '48Z%' AND membership_status LIKE '%gold%' 
 AND drivers_license.plate_number LIKE '%h42W%'
 
-SOLVED! 
+--SOLVED! 
+
+--Additional challenge - find the villain behind the crime with just 2 steps
+--First checking the criminal's interview
+
+SELECT transcript
+FROM interview
+JOIN person ON
+interview.person_id=person.id 
+JOIN drivers_license ON
+drivers_license.id=person.license_id
+WHERE name='Jeremy Bowers' AND plate_number LIKE '%h42W%'
+
+--Checking the given data and finding out the main villian
+
+SELECT name,event_name,date
+FROM person
+LEFT JOIN drivers_license ON
+drivers_license.id=person.license_id
+LEFT JOIN facebook_event_checkin ON
+facebook_event_checkin.person_id=person.id
+WHERE gender= 'female' 
+AND hair_color='red' 
+AND car_make='Tesla' 
+AND car_model='Model S' 
+AND height BETWEEN 65 AND 67
+AND event_name LIKE '%SQL Symphony Concert%'
+
+--END
